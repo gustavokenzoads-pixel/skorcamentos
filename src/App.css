@@ -286,14 +286,11 @@ body {
 .pdf-wrapper.preview-aberto {
   display: flex;
   flex-direction: column;
-  align-items: center;
   position: fixed;
   inset: 0;
   z-index: 300;
   background: rgba(10, 15, 30, 0.92);
-  overflow-y: auto;
-  padding: 0 16px 40px;
-  gap: 20px;
+  overflow: hidden; /* O wrapper NÃO rola — só o corpo rola */
 }
 
 /* Geração: template visível em (0,0) para o html2canvas capturar */
@@ -307,17 +304,28 @@ body {
 }
 
 /* ===== Preview — controles ===== */
+
+/* Cabeçalho: sempre visível no topo, nunca rola */
 .preview-topo {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  width: 100%;
-  max-width: 740px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
-  background: rgba(10, 15, 30, 0.92);
+  padding: 12px 20px;
+  background: rgba(10, 15, 30, 0.97);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Corpo: ocupa o restante e rola verticalmente */
+.preview-aberto .preview-corpo {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 48px;
+  gap: 20px;
 }
 
 .preview-titulo {

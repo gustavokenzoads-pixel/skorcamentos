@@ -245,18 +245,16 @@ export default function OrcamentoApp() {
         {previewAberto && (
           <div className="preview-topo">
             <span className="preview-titulo">Pré-visualização do Orçamento</span>
-            <button className="btn-fechar-preview" onClick={() => setPreviewAberto(false)}>✕</button>
+            <button className="btn-fechar-preview" onClick={() => setPreviewAberto(false)}>✕ Fechar</button>
           </div>
         )}
 
+        {/* preview-corpo: área de scroll — só ativo no preview */}
+        <div className="preview-corpo">
         <div
           id="pdf-content"
           className="pdf-template"
-          style={previewAberto ? {
-            transform: `scale(${escalaPreview})`,
-            transformOrigin: 'top center',
-            marginBottom: `${(escalaPreview - 1) * 100}%`,
-          } : {}}
+          style={previewAberto ? { zoom: escalaPreview } : {}}
         >
           <p className="pt-cnpj">CNPJ: 25.268.162/0001-36</p>
 
@@ -315,11 +313,12 @@ export default function OrcamentoApp() {
           </div>
         </div>
 
-        {previewAberto && (
-          <button className="btn-baixar-preview" onClick={gerarPDF}>
-            <IconePDF /> Baixar PDF
-          </button>
-        )}
+          {previewAberto && (
+            <button className="btn-baixar-preview" onClick={gerarPDF}>
+              <IconePDF /> Baixar PDF
+            </button>
+          )}
+        </div>{/* fim preview-corpo */}
       </div>
     </>
   );
