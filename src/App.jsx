@@ -80,17 +80,46 @@ export default function OrcamentoApp() {
     return () => { document.body.style.overflow = ''; };
   }, [previewAberto]);
 
+  // Compartilha no celular (menu nativo: WhatsApp, e-mail, etc.)
+  // No desktop faz download direto
+  const compartilharOuBaixar = async (blob, nomeArq) => {
+    const arquivo = new File([blob], nomeArq, { type: 'application/pdf' });
+    try {
+      if (
+        navigator.share &&
+        (navigator.canShare ? navigator.canShare({ files: [arquivo] }) : true)
+      ) {
+        await navigator.share({
+          title: 'Orçamento SK Funilaria e Pintura',
+          text: `Orçamento para ${form.nomeCliente} — ${form.modeloCarro}`,
+          files: [arquivo],
+        });
+        return; // sucesso — não precisa baixar
+      }
+    } catch (err) {
+      if (err.name === 'AbortError') return; // usuário fechou o menu — ok
+      // outro erro: cai para o download abaixo
+    }
+    // Fallback: download normal (desktop ou share não disponível)
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nomeArq;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const gerarPDF = () => {
     if (!form.nomeCliente || !form.placaCarro || !form.modeloCarro) {
       alert('Preencha pelo menos: Nome do Cliente, Placa e Modelo do Carro');
       return;
     }
 
-    // Fecha preview se estiver aberto, ativa estado de geração
     setPreviewAberto(false);
     setGerando(true);
 
-    // Dois rAFs garantem que o React aplicou o novo estado antes do html2canvas rodar
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
         const nomeArq = `orcamentosk${normalizarNome(form.nomeCliente)}${normalizarNome(form.modeloCarro)}.pdf`;
@@ -105,8 +134,13 @@ export default function OrcamentoApp() {
             jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
           })
           .from(el)
-          .save()
-          .then(() => setGerando(false));
+          .toPdf()
+          .get('pdf')
+          .then(async (pdfObj) => {
+            const blob = pdfObj.output('blob');
+            await compartilharOuBaixar(blob, nomeArq);
+          })
+          .finally(() => setGerando(false));
       })
     );
   };
