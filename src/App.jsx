@@ -266,14 +266,11 @@ export default function OrcamentoApp() {
 
           <div className="pt-bloco">
             <p className="pt-bloco-header"><strong><u>PECAS</u></strong> -</p>
-            {pecas.filter((p) => p.descricao.trim()).map((p, i) => {
-              const val = parseFloat(p.valor) || 0;
-              return (
-                <p key={i} className="pt-item">
-                  {`-  `}{p.descricao}{val > 0 ? ` R$ ${formatarBRL(val)}` : ''}
-                </p>
-              );
-            })}
+            {pecas.filter((p) => p.descricao.trim()).map((p, i) => (
+  <p key={i} className="pt-item">
+    {`-  `}{p.descricao}
+  </p>
+))}
           </div>
 
           <div className="pt-bloco">
