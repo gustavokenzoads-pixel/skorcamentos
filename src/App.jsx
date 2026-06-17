@@ -268,7 +268,7 @@ export default function OrcamentoApp() {
             <p className="pt-bloco-header"><strong><u>PECAS</u></strong> -</p>
             {pecas.filter((p) => p.descricao.trim()).map((p, i) => (
   <p key={i} className="pt-item">
-    {`-  `}{p.descricao}
+    {`-  `}{p.descricao}{p.valor ? ` — R$ ${formatarBRL(parseFloat(p.valor))}` : ''}
   </p>
 ))}
           </div>
@@ -277,7 +277,7 @@ export default function OrcamentoApp() {
             <p className="pt-bloco-header"><strong><u>MAO DE OBRA</u></strong> -</p>
             {servicos.filter((m) => m.descricao.trim()).map((m, i) => (
   <p key={i} className="pt-item">
-    {`-  `}{m.descricao}
+    {`-  `}{m.descricao}{m.valor ? ` — R$ ${formatarBRL(parseFloat(m.valor))}` : ''}
   </p>
 ))}
           </div>
